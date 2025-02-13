@@ -37,6 +37,7 @@
 
 	<modules>
 		<module>dashscope-multi-model</module>
+		<module>ark-multi-model</module>
 	</modules>
 
 	<build>

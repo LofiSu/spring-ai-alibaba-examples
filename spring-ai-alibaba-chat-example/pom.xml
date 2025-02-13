@@ -37,8 +37,12 @@
 
 	<modules>
 		<module>dashscope-chat</module>
+		<module>deepseek-chat</module>
 		<module>openai-chat</module>
 		<module>ollama-chat</module>
+		<module>ollama-deepseek-chat</module>
+		<module>zhipuai-chat</module>
+		<module>moonshot-chat</module>
 	</modules>
 
 	<build>

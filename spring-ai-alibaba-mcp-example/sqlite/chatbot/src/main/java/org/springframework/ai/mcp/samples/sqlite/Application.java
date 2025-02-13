@@ -42,7 +42,7 @@ public class Application {
 
 			try {
 				while (true) {
-					System.out.print("\nUSER: ");
+					System.out.print("\n USER: ");
 					String input = scanner.nextLine();
 
 					if (input.equalsIgnoreCase("exit")) {

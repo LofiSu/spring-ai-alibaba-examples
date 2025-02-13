@@ -125,7 +125,7 @@ public class MultiModelController {
 		UserMessage message = new UserMessage(
 				prompt,
 				new Media(
-						MimeTypeUtils.IMAGE_PNG,
+						MimeTypeUtils.IMAGE_JPEG,
 						resourceLoader.getResource("classpath:/multimodel/dog_and_girl.jpeg")
 				));
 		message.getMetadata().put(DashScopeChatModel.MESSAGE_FORMAT, MessageFormat.IMAGE);
@@ -152,7 +152,7 @@ public class MultiModelController {
 		UserMessage message = new UserMessage(
 				prompt,
 				new Media(
-						MimeTypeUtils.IMAGE_PNG,
+						MimeTypeUtils.IMAGE_JPEG,
 						resourceLoader.getResource("classpath:/multimodel/dog_and_girl.jpeg")
 				));
 		message.getMetadata().put(DashScopeChatModel.MESSAGE_FORMAT, MessageFormat.IMAGE);

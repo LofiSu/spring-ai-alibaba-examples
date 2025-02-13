@@ -34,3 +34,10 @@ target/
 
 # node_modules
 **/node_modules
+
+logs/
+
+# ignore test.
+*.wav
+*.png
+*.jpg
