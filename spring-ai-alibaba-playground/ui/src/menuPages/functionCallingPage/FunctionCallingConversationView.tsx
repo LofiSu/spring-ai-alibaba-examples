@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { Sender } from "@ant-design/x";
 import CodeInfo from "./components/CodeInfo";
-import { useStyles } from "./style";
 import {
   ChatMessage,
   useConversationContext,
@@ -13,13 +12,17 @@ import { mapStoredMessagesToUIMessages } from "../../utils";
 // 导入通用气泡组件
 import ResponseBubble from "../components/ResponseBubble";
 import RequestBubble from "../components/RequestBubble";
-import { McpUiMessage } from "./types";
+import { FunctionCallingUiMessage } from "./types";
 import { Message } from "../ChatPage/types";
-interface McpConversationViewProps {
+import { useStyles } from "./style";
+
+interface FunctionCallingConversationViewProps {
   conversationId: string;
 }
 
-const McpConversationView = ({ conversationId }: McpConversationViewProps) => {
+const FunctionCallingConversationView = ({
+  conversationId,
+}: FunctionCallingConversationViewProps) => {
   const { styles } = useStyles();
   const location = useLocation();
   const [inputContent, setInputContent] = useState("");
@@ -50,7 +53,7 @@ const McpConversationView = ({ conversationId }: McpConversationViewProps) => {
         activeConversation.messages.length > 0
       ) {
         const filteredMessages = activeConversation.messages.filter(
-          (msg) => !(msg as McpUiMessage).isLoading
+          (msg) => !(msg as FunctionCallingUiMessage).isLoading
         );
 
         if (filteredMessages.length > 0) {
@@ -97,12 +100,12 @@ const McpConversationView = ({ conversationId }: McpConversationViewProps) => {
     role: "assistant",
     isError: boolean = false,
     userTimestamp: number,
-    userMessage: McpUiMessage
+    userMessage: FunctionCallingUiMessage
   ) => {
     if (!activeConversation) return;
 
     const assistantTimestamp = Date.now();
-    const assistantMessage: McpUiMessage = {
+    const assistantMessage: FunctionCallingUiMessage = {
       role: role,
       content: messageContent,
       timestamp: assistantTimestamp,
@@ -123,7 +126,7 @@ const McpConversationView = ({ conversationId }: McpConversationViewProps) => {
       : [...activeConversation.messages, userMessage];
 
     const finalMessages = baseMessages
-      .filter((msg) => !(msg as McpUiMessage).isLoading)
+      .filter((msg) => !(msg as FunctionCallingUiMessage).isLoading)
       .concat([assistantMessage]);
 
     if (isError) {
@@ -132,7 +135,7 @@ const McpConversationView = ({ conversationId }: McpConversationViewProps) => {
 
     updateActiveConversation({
       ...activeConversation,
-      messages: finalMessages as McpUiMessage[],
+      messages: finalMessages as FunctionCallingUiMessage[],
     });
   };
 
@@ -141,7 +144,7 @@ const McpConversationView = ({ conversationId }: McpConversationViewProps) => {
     setIsLoading(true);
     setInputContent("");
     const userTimestamp = Date.now();
-    const userMessage: McpUiMessage = {
+    const userMessage: FunctionCallingUiMessage = {
       role: "user",
       content: text,
       timestamp: userTimestamp,
@@ -153,13 +156,14 @@ const McpConversationView = ({ conversationId }: McpConversationViewProps) => {
     const updatedWithUserMessage = [
       ...activeConversation.messages,
       userMessage,
-    ] as McpUiMessage[];
+    ] as FunctionCallingUiMessage[];
     updateActiveConversation({
       ...activeConversation,
       messages: updatedWithUserMessage,
     });
 
     try {
+      // TODO: 服务端接口还没好
       const response = await getMcp(text, conversationId);
       if (response.code !== 0 || !response.data) {
         throw new Error(response.message || "Failed to get response");
@@ -172,7 +176,7 @@ const McpConversationView = ({ conversationId }: McpConversationViewProps) => {
         userMessage
       );
     } catch (error) {
-      console.error("处理MCP请求错误:", error);
+      console.error("处理Function Calling请求错误:", error);
       updateConversationMessages(
         "抱歉，处理您的请求时出现错误。",
         "assistant",
@@ -186,7 +190,7 @@ const McpConversationView = ({ conversationId }: McpConversationViewProps) => {
   };
 
   return (
-    <BasePage title="MCP" conversationId={conversationId}>
+    <BasePage title="Function Calling" conversationId={conversationId}>
       <div className={styles.container}>
         {/* 左侧面板 - 代码展示和输入框 */}
         <div className={styles.leftPanel}>
@@ -206,7 +210,7 @@ const McpConversationView = ({ conversationId }: McpConversationViewProps) => {
         {/* 右侧面板  */}
         <div className={styles.rightPanel}>
           <div className={`${styles.card} ${styles.resultPanel}`}>
-            <h2 className={styles.panelTitle}>MCP 对话</h2>
+            <h2 className={styles.panelTitle}>Function Calling 案例</h2>
             <div className={styles.messagesContainer}>
               {messages.length === 0 && !conversationId ? (
                 <ResponseBubble
@@ -239,4 +243,4 @@ const McpConversationView = ({ conversationId }: McpConversationViewProps) => {
   );
 };
 
-export default McpConversationView;
+export default FunctionCallingConversationView;

@@ -3,11 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { Sender } from "@ant-design/x";
 import CodeInfo from "./components/CodeInfo";
 import OutputResult from "./components/OutputResult";
-import { useStyles } from "./style";
 import { useConversationContext } from "../../stores/conversation.store";
 import { MenuPage } from "../../stores/functionMenu.store";
+import { useStyles } from "./style";
 
-const McpLandingView = () => {
+const FunctionCallingLandingView = () => {
   const { styles } = useStyles();
   const [inputContent, setInputContent] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -21,7 +21,9 @@ const McpLandingView = () => {
     try {
       const newConversation = createConversation(MenuPage.Mcp, [], content);
       navigate(
-        `/mcp/${newConversation.id}?prompt=${encodeURIComponent(content)}`
+        `/function-calling/${newConversation.id}?prompt=${encodeURIComponent(
+          content
+        )}`
       );
     } catch (error) {
       console.error("创建MCP对话错误:", error);
@@ -46,10 +48,10 @@ const McpLandingView = () => {
       </div>
 
       <div className={styles.rightPanel}>
-        <OutputResult messages={[]} title="MCP 对话" />
+        <OutputResult messages={[]} title="Function Calling 案例" />
       </div>
     </div>
   );
 };
 
-export default McpLandingView;
+export default FunctionCallingLandingView;

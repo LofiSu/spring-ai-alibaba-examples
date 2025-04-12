@@ -11,7 +11,7 @@ export interface Message {
   isError?: boolean;
 }
 
-export interface McpUiMessage {
+export interface FunctionCallingUiMessage {
   role: "user" | "assistant";
   content: string;
   timestamp: number;
