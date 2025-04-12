@@ -37,6 +37,11 @@ public class BookingTools {
 			String from, String to, String bookingClass) {
 	}
 
+	/**
+	 * 通过 @Bean + Function<...> 注册为可被模型调用的函数
+	 * 并与具体业务实现类进行解耦
+	 * @return
+	 */
 	@Bean
 	@Description("获取机票预定详细信息")
 	public Function<BookingDetailsRequest, BookingDetails> getBookingDetails() {

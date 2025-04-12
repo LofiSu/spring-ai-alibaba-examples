@@ -1,0 +1,19 @@
+# Chat Memory API
+
+### SQLite Memory API
+GET http://127.0.0.1:8080/chat-memory/sqlite?prompt="你好，我是小王"&chatId="100001"
+
+### 回答
+GET http://127.0.0.1:8080/chat-memory/sqlite?prompt="我是谁"&chatId="100001"
+
+### Redis Memory API
+GET http://127.0.0.1:8080/chat-memory/redis?prompt="你好，我是小王"&chatId="100001"
+
+### 回答
+GET http://127.0.0.1:8080/chat-memory/redis?prompt="我是谁"&chatId="100001"
+
+###  In Memory API
+GET http://127.0.0.1:8080/chat-memory/in-memory?prompt="你好，我是小王"&chatId="100001"
+
+### 回答
+GET http://127.0.0.1:8080/chat-memory/in-memory?prompt="我是谁"&chatId="100001"

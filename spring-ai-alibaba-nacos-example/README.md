@@ -1,91 +1,114 @@
 # Spring AI Alibaba Nacos Example
 
-This project demonstrates the integration of Spring Boot with Alibaba Nacos for configuration management and service discovery, along with AI capabilities using the Spring AI library.
+演示如何使用 Nacos 的动态配置管理功能管理 Spring AI Alibaba 的 Prompt。达到动态 Prompt 的效果。
 
-## Prerequisites
+1. 启动 Nacos 服务；
+2. 写入配置，dataId 为：spring.ai.alibaba.configurable.prompt
+3. 在配置中写入：
 
-- Java 17
-- Maven
-- Nacos Server
-- Deepseek API Key
+    ```json
+    [
+      {
+        "name": "author",
+        "template": "列出 {author} 有名的著作",
+        "model": {
+          "key": "余华"
+        }
+      }
+    ]
+    ```
+   
+4. 启动 example 项目，并请求 `http://127.0.0.1:10010/nacos/books` 接口，将会看到如下信息：
 
-## Setup
+```text
+鲁迅是中国现代文学史上最重要的作家之一，他的作品对中国文学和社会产生了深远的影响。以下是一些鲁迅最著名的著作：
 
-1. **Clone the repository:**
+### 小说集
+1. **《呐喊》**  
+   - 代表作：《狂人日记》、《阿Q正传》、《孔乙己》、《药》、《故乡》等。
+   - 特点：揭示封建社会的黑暗和人民的苦难，呼唤民众觉醒。
 
-   ```sh
-   git clone https://github.com/springaialibaba/spring-ai-alibaba-examples.git
-   cd spring-ai-alibaba-nacos-example
-   ```
+2. **《彷徨》**  
+   - 代表作：《祝福》、《伤逝》、《离婚》等。
+   - 特点：反映知识分子在时代变革中的迷茫与挣扎。
 
-2. **Configure Nacos Server:**
+3. **《故事新编》**  
+   - 代表作：《补天》、《奔月》、《铸剑》等。
+   - 特点：以神话、传说为素材，进行现代化的改编与讽刺。
 
-   Ensure that the Nacos server is running and accessible. Set the `NACOS_SERVER_ADDR` environment variable to the address of your Nacos server.
+---
 
-3. **Configure Deepseek API Key:**
+### 散文集
+1. **《朝花夕拾》**  
+   - 代表作：《从百草园到三味书屋》、《藤野先生》、《范爱农》等。
+   - 特点：回忆童年和青年时期的生活经历，充满温情与思考。
 
-   Set the `DEEPSEEK_API_KEY` environment variable with your Deepseek API key.
+---
 
-4. **Build the project:**
+### 杂文集（部分）
+鲁迅的杂文是他思想表达的重要形式，数量众多，以下是部分杂文集：
+1. **《坟》**
+2. **《热风》**
+3. **《华盖集》**
+4. **《华盖集续编》**
+5. **《而已集》**
+6. **《三闲集》**
+7. **《二心集》**
+8. **《南腔北调集》**
+9. **《伪自由书》**
+10. **《准风月谈》**
+11. **《花边文学》**
 
-   ```sh
-   mvn clean install
-   ```
+---
 
-## Running the Application
+### 学术著作
+1. **《中国小说史略》**  
+   - 系统研究中国古代小说发展历史的经典著作。
+   
+2. **《汉文学史纲要》**  
+   - 对中国文学史的梳理与总结。
 
-To run the application, use the following command:
+---
 
-```sh
-mvn spring-boot:run
+### 翻译作品
+鲁迅还翻译了许多外国文学作品，推动了中外文化交流，例如：
+- **《域外小说集》**（与周作人合译）
+- 翻译果戈理的《死魂灵》等。
+
+鲁迅的作品不仅具有文学价值，更深刻地反映了当时社会的问题，体现了他作为思想家和革命家的责任感。
 ```
 
-The application will start on port `10010`.
+5. 修改 prompt 为：
 
-## Endpoints
+    ```json
+    [
+      {
+        "name": "author",
+        "template": "列出 {author} 有名的著作，只需要书名清单。",
+        "model": {
+          "key": "鲁迅"
+        }
+      }
+    ]
+    ```
 
-### Joke Prompt
+6. 在不重启服务的基础上，再次请求 `http://127.0.0.1:10010/nacos/books` 接口，将会看到如下信息：
 
-- **URL:** `/joke`
-- **Method:** `GET`
-- **Description:** Returns a joke message configured in Nacos.
+    ```text
+    1. 《呐喊》  
+    2. 《彷徨》  
+    3. 《野草》  
+    4. 《朝花夕拾》  
+    5. 《阿Q正传》  
+    6. 《坟》  
+    7. 《热风》  
+    8. 《华盖集》  
+    9. 《华盖集续编》  
+    10. 《故事新编》  
+    11. 《三闲集》  
+    12. 《二心集》  
+    13. 《南腔北调集》  
+    14. 《且介亭杂文》  
+    15. 《而已集》
+    ```
 
-## Configuration
-
-The application uses the following configuration files:
-
-- `application.yml`: Main configuration file.
-- `prompt-config.yaml`: Contains prompt-related configurations.
-
-### prompt-config.yaml
-
-```yaml
-prompt:
-   joke: "讲个笑话"
-```
-## Testing Endpoints
-
-To test the `/joke` endpoint using `curl`, you can use the following command:
-
-```sh
-curl http://localhost:10010/joke
-```
-
-## Modifying `prompt-config.yaml`
-
-To modify the `prompt-config.yaml` file, update the `joke` message as needed. For example:
-
-```yaml
-prompt:
-   joke: "使用海盗的声音讲个笑话"
-```
-
-After modifying the `prompt-config.yaml` file, you can test the changes without restarting the application:
-
-```sh
-curl http://localhost:10010/joke
-```
-
-## License
-
-This project is licensed under the Apache License 2.0. See the [LICENSE](../LICENSE) file for details.

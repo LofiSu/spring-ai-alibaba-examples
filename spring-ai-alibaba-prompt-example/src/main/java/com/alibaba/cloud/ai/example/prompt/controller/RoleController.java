@@ -20,8 +20,9 @@ package com.alibaba.cloud.ai.example.prompt.controller;
 import java.util.List;
 import java.util.Map;
 
+import reactor.core.publisher.Flux;
+
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.prompt.Prompt;
@@ -40,6 +41,9 @@ public class RoleController {
 
 	private final ChatClient chatClient;
 
+	/**
+	 * 加载 System prompt tmpl.
+	 */
 	@Value("classpath:/prompts/system-message.st")
 	private Resource systemResource;
 
@@ -49,23 +53,29 @@ public class RoleController {
 	}
 
 	@GetMapping("/roles")
-	public AssistantMessage generate(
-			@RequestParam(value = "message",
-			defaultValue = "Tell me about three famous pirates from the Golden Age of Piracy and why they did.  Write at least a sentence for each pirate.") String message,
-			@RequestParam(value = "name", defaultValue = "Bob") String name,
-			@RequestParam(value = "voice", defaultValue = "pirate") String voice
+	public Flux<String> generate(
+			@RequestParam(
+					value = "message",
+					required = false,
+					defaultValue = "Tell me about three famous pirates from the Golden Age of Piracy and why they did.  Write at least a sentence for each pirate.") String message,
+			@RequestParam(value = "name", required = false, defaultValue = "Bob") String name,
+			@RequestParam(value = "voice", required = false, defaultValue = "pirate") String voice
 	) {
 
+		// 用户输入
 		UserMessage userMessage = new UserMessage(message);
 
+		// 使用 System prompt tmpl
 		SystemPromptTemplate systemPromptTemplate = new SystemPromptTemplate(systemResource);
+		// 填充 System prompt 中的变量值
 		Message systemMessage = systemPromptTemplate.createMessage(Map.of("name", name, "voice", voice));
 
-		return chatClient.prompt(new Prompt(List.of(userMessage, systemMessage)))
-				.call()
-				.chatResponse()
-				.getResult()
-				.getOutput();
+		// 调用大模型
+		return chatClient.prompt(
+						new Prompt(List.of(
+								userMessage,
+								systemMessage)))
+				.stream().content();
 	}
 
 }

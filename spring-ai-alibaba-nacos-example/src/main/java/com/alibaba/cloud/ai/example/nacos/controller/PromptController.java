@@ -16,28 +16,60 @@
 
 package com.alibaba.cloud.ai.example.nacos.controller;
 
-import com.alibaba.cloud.ai.example.nacos.config.PromptConfig;
+import java.util.Map;
+
+import com.alibaba.cloud.ai.prompt.ConfigurablePromptTemplate;
+import com.alibaba.cloud.ai.prompt.ConfigurablePromptTemplateFactory;
+import org.slf4j.Logger;
+
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.prompt.Prompt;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author : huangzhen
  */
+
 @RestController
+@RequestMapping("/nacos")
 public class PromptController {
 
-    @Autowired
-    private PromptConfig promptConfig;
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(PromptController.class);
 
-    @Autowired
-    private ChatClient chatClient;
+    private final ChatClient client;
 
-    @GetMapping("/joke")
-    public String generateJoke() {
-        return chatClient.prompt(new Prompt(promptConfig.getJoke())).call().content();
+    private final ConfigurablePromptTemplateFactory promptTemplateFactory;
+
+    public PromptController(
+            ChatModel chatModel,
+            ConfigurablePromptTemplateFactory promptTemplateFactory
+    ) {
+
+        this.client = ChatClient.builder(chatModel).build();
+        this.promptTemplateFactory = promptTemplateFactory;
+    }
+
+    @GetMapping("/books")
+    public String generateJoke(
+            @RequestParam(value = "author", required = false, defaultValue = "鲁迅") String authorName
+    ) {
+
+        // 使用 nacos 的 prompt tmpl 创建 prompt
+        ConfigurablePromptTemplate template = promptTemplateFactory.create(
+                "author",
+                "please list the three most famous books by this {author}."
+        );
+        Prompt prompt = template.create(Map.of("author", authorName));
+        logger.info("最终构建的 prompt 为：{}", prompt.getContents());
+
+        // 使用 prompt 请求大模型
+        return client.prompt(prompt)
+                .call()
+                .content();
     }
 
 }

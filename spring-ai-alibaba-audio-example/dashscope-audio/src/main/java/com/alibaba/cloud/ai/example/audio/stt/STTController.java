@@ -91,7 +91,7 @@ public class STTController {
 		Flux<AudioTranscriptionResponse> response = transcriptionModel
 				.stream(
 						new AudioTranscriptionPrompt(
-								new FileSystemResource("spring-ai-alibaba-audio-example/dashscope-audio/src/main/resources/stt/count.pcm"),
+								new FileSystemResource("spring-ai-alibaba-audio-example/dashscope-audio/src/main/resources/gen/tts/output.mp3"),
 								DashScopeAudioTranscriptionOptions.builder()
 										.withModel(DEFAULT_MODEL_2)
 										.withSampleRate(16000)
